@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Meridian ERP - HR preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{background:#F1EFE8;margin:0;padding:20px 12px;}
+.page{max-width:1040px;margin:0 auto;}
+.mrd{--ink:#1C1A17;--ink-2:#56524B;--ink-3:#857F76;--surface:#FFFFFF;--surface-sunk:#F7F5F2;--surface-raised:#FCFBF9;--line:#E7E3DD;--line-strong:#D3CDC4;--ok:#2F6B34;--ok-bg:#E4F0E4;--hold:#96650B;--hold-bg:#FAEEDA;--bad:#A32D2D;--bad-bg:#FBE7E7;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--r-control:10px;--r-card:12px;--r-panel:16px;--skin:#1565C0;--skin-tint:#E8F1FB;--skin-glow:rgba(21,101,192,.16);font-family:var(--font);color:var(--ink);}
+@media (min-width:620px){
+.mrd-panel{padding:24px 26px;}
+.mrd-title{font-size:25px;}
+.mrd-body{padding:22px 24px 26px;}
+.mrd-screen.is-split{display:flex;}
+.mrd-screen.is-split .mrd-panel{width:38%;flex-shrink:0;display:flex;flex-direction:column;}
+.mrd-screen.is-split .mrd-main{flex:1;min-width:0;}
+.mrd-grid{grid-template-columns:repeat(2,1fr);}
+}
+.mrd-grid{display:grid;gap:10px;}
+.mrd-grid .mrd-card{margin-bottom:0;}
+.nav-inline{position:relative;display:flex;gap:6px;margin-bottom:14px;}
+.nav-inline button{padding:6px 12px;border-radius:9999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);font-family:var(--font);font-size:11.5px;cursor:pointer;}
+.nav-inline button.on{background:#fff;color:var(--skin);border-color:#fff;}
+.mrd-screen{border-radius:var(--r-panel);overflow:hidden;border:.5px solid var(--line);background:var(--surface);}
+.mrd-panel{background:var(--skin);padding:20px 20px 22px;position:relative;overflow:hidden;}
+.mrd-panel::before,.mrd-panel::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.14);pointer-events:none;}
+.mrd-panel::before{width:180px;height:180px;right:-68px;top:-74px;}
+.mrd-panel::after{width:112px;height:112px;right:8px;top:20px;}
+.mrd-crumb{position:relative;font-size:11.5px;color:rgba(255,255,255,.62);margin-bottom:6px;}
+.mrd-title{position:relative;font-size:22px;font-weight:500;letter-spacing:-.024em;line-height:1.2;color:#fff;}
+.mrd-sub{position:relative;font-size:13px;line-height:1.45;color:rgba(255,255,255,.78);margin-top:4px;}
+.mrd-figures{position:relative;display:flex;gap:22px;margin-top:16px;flex-wrap:wrap;}
+.mrd-fig-n{font-size:21px;font-weight:500;letter-spacing:-.026em;line-height:1.12;color:#fff;}
+.mrd-fig-l{font-size:11px;color:rgba(255,255,255,.62);margin-top:2px;}
+.mrd-tabs{display:flex;border-bottom:.5px solid var(--line);}
+.mrd-tab{flex:1;padding:13px 5px;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font);font-size:12px;color:var(--ink-2);cursor:pointer;}
+.mrd-tab[aria-selected="true"]{color:var(--skin);border-bottom-color:var(--skin);}
+.mrd-body{padding:18px 17px 22px;}
+.mrd-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+.mrd-head.spaced{margin-top:22px;}
+.mrd-label{font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-3);}
+.mrd-count{font-size:12px;color:var(--ink-2);}
+.mrd-input{width:100%;height:40px;padding:0 12px;border-radius:var(--r-control);border:.5px solid var(--line-strong);background:var(--surface-raised);font-family:var(--font);font-size:14px;color:var(--ink);box-sizing:border-box;}
+.mrd-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.mrd-chip{padding:7px 12px;border-radius:9999px;border:.5px solid var(--line-strong);background:var(--surface-raised);font-family:var(--font);font-size:12.5px;color:var(--ink-2);cursor:pointer;}
+.mrd-chip[aria-pressed="true"]{background:var(--skin);border-color:var(--skin);color:#fff;}
+.mrd-card{border-radius:var(--r-card);border:.5px solid var(--line);background:var(--surface-raised);padding:14px 15px;margin-bottom:10px;}
+.mrd-kv{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-bottom:.5px solid var(--line);font-size:13px;}
+.mrd-kv:last-child{border-bottom:none;}
+.mrd-k{color:var(--ink-2);}
+.mrd-v{color:var(--ink);letter-spacing:-.01em;text-align:right;}
+.mrd-v.is-total{font-size:16px;font-weight:500;}
+.mrd-v.is-neg{color:var(--bad);}
+.mrd-row{display:flex;align-items:center;gap:10px;}
+.mrd-avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:var(--skin-tint);color:var(--skin);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:500;}
+.mrd-row-main{flex:1;min-width:0;}
+.mrd-row-name{font-size:14px;}
+.mrd-row-desc{font-size:12px;color:var(--ink-2);margin-top:1px;}
+.mrd-row-meta{font-size:11px;color:var(--ink-3);margin-top:1px;}
+.mrd-row-end{text-align:right;flex-shrink:0;margin-left:auto;}
+.mrd-badge{font-size:10px;padding:3px 7px;border-radius:9999px;white-space:nowrap;display:inline-block;}
+.mrd-badge.is-ok{background:var(--ok-bg);color:var(--ok);}
+.mrd-badge.is-hold{background:var(--hold-bg);color:var(--hold);}
+.mrd-badge.is-bad{background:var(--bad-bg);color:var(--bad);}
+.mrd-btn{min-height:34px;padding:0 12px;border-radius:var(--r-control);border:.5px solid var(--line-strong);background:var(--surface);color:var(--ink);font-family:var(--font);font-size:12.5px;cursor:pointer;margin-top:10px;}
+.mrd-empty{text-align:center;padding:28px 16px;color:var(--ink-3);font-size:13px;}
+.mrd-foot{font-size:11.5px;color:var(--ink-3);text-align:center;margin-top:18px;line-height:1.55;}
+.mrd-bar{height:9px;border-radius:9999px;background:var(--surface-sunk);overflow:hidden;position:relative;display:flex;margin:8px 0 5px;}
+.mrd-bar-fill{height:100%;border-radius:9999px;background:var(--skin);}
+.mrd-bar-mark{position:absolute;top:-2px;width:2px;height:13px;background:var(--ink);opacity:.45;}
+.mrd-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);}
+.pane{display:none;}
+.pane.on{display:block;}
+</style></head>
+<body>
+<div class="page">
+<div class="mrd" data-skin="water">
+<div id="screen-dir" class="pane on">
+<div class="mrd-screen is-split">
+<div class="mrd-panel">
+<div class="nav-inline"><button class="on" data-screen="dir">Directory</button><button data-screen="prof">Employee profile</button></div>
+<div class="mrd-crumb">Meridian ERP &rsaquo; HR &amp; Payroll</div>
+<div class="mrd-title">Employee directory</div>
+<div class="mrd-sub">Everyone on payroll, one record each</div>
+<div class="mrd-figures">
+<div><div class="mrd-fig-n">6</div><div class="mrd-fig-l">Headcount</div></div>
+<div><div class="mrd-fig-n">1</div><div class="mrd-fig-l">On leave</div></div>
+<div><div class="mrd-fig-n">1</div><div class="mrd-fig-l">Serving notice</div></div>
+</div></div>
+<div class="mrd-main">
+<div class="mrd-tabs">
+<button class="mrd-tab" aria-selected="true" data-tab="all">All</button>
+<button class="mrd-tab" data-tab="active">Active</button>
+<button class="mrd-tab" data-tab="leave">On leave</button>
+</div>
+<div class="mrd-body">
+<div class="mrd-head"><span class="mrd-label">Search &amp; filter</span></div>
+<input class="mrd-input" id="q" placeholder="Search by name" style="margin-bottom:10px;">
+<div class="mrd-chips" id="chips" style="margin-bottom:16px;">
+<button class="mrd-chip" aria-pressed="true" data-dept="All">All</button>
+<button class="mrd-chip" data-dept="Sales">Sales</button>
+<button class="mrd-chip" data-dept="Finance">Finance</button>
+<button class="mrd-chip" data-dept="Operations">Operations</button>
+<button class="mrd-chip" data-dept="HR">HR</button>
+<button class="mrd-chip" data-dept="Logistics">Logistics</button>
+</div>
+<div class="mrd-head spaced"><span class="mrd-label">Employees</span><span class="mrd-count" id="shown">6 shown</span></div>
+<div id="list" class="mrd-grid"></div>
+<p class="mrd-foot">Adding someone here creates their login, leave balance and place in the reporting tree in one step.</p>
+</div></div></div></div>
+
+<div id="screen-prof" class="pane">
+<div class="mrd-screen">
+<div class="mrd-panel">
+<div class="nav-inline"><button data-screen="dir">Directory</button><button class="on" data-screen="prof">Employee profile</button></div>
+<div class="mrd-crumb">Meridian ERP &rsaquo; HR &amp; Payroll &rsaquo; EMP-0142</div>
+<div class="mrd-title">Ananya Sharma</div>
+<div class="mrd-sub">Regional Sales Manager &middot; Sales</div>
+<div class="mrd-figures">
+<div><div class="mrd-fig-n">&#8377; 14.4L</div><div class="mrd-fig-l">Annual CTC</div></div>
+<div><div class="mrd-fig-n">16</div><div class="mrd-fig-l">Leave left</div></div>
+<div><div class="mrd-fig-n">1</div><div class="mrd-fig-l">Docs pending</div></div>
+</div></div>
+<div class="mrd-main">
+<div class="mrd-tabs">
+<button class="mrd-tab" aria-selected="true" data-ptab="overview">Overview</button>
+<button class="mrd-tab" data-ptab="salary">Salary</button>
+<button class="mrd-tab" data-ptab="leave">Leave</button>
+<button class="mrd-tab" data-ptab="documents">Documents</button>
+</div>
+<div class="mrd-body">
+<div class="ppane on" id="p-overview">
+<div class="mrd-head"><span class="mrd-label">Employment</span></div>
+<div class="mrd-card">
+<div class="mrd-kv"><span class="mrd-k">Employee ID</span><span class="mrd-v">EMP-0142</span></div>
+<div class="mrd-kv"><span class="mrd-k">Department</span><span class="mrd-v">Sales</span></div>
+<div class="mrd-kv"><span class="mrd-k">Reporting manager</span><span class="mrd-v">Vikram Desai</span></div>
+<div class="mrd-kv"><span class="mrd-k">Date of joining</span><span class="mrd-v">12 Mar 2022</span></div>
+<div class="mrd-kv"><span class="mrd-k">Status</span><span class="mrd-v"><span class="mrd-badge is-ok">Active</span></span></div>
+</div>
+<div class="mrd-head spaced"><span class="mrd-label">Contact</span></div>
+<div class="mrd-card">
+<div class="mrd-kv"><span class="mrd-k">Phone</span><span class="mrd-v">+91 98200 41127</span></div>
+<div class="mrd-kv"><span class="mrd-k">Email</span><span class="mrd-v">ananya.sharma@meridian.example</span></div>
+<div class="mrd-kv"><span class="mrd-k">PAN</span><span class="mrd-v">ABCPS1234F</span></div>
+</div>
+<button class="mrd-btn">Edit details</button>
+</div>
+
+<div class="ppane" id="p-salary">
+<div class="mrd-head"><span class="mrd-label">Annual structure</span></div>
+<div class="mrd-card">
+<div class="mrd-kv"><span class="mrd-k">Basic</span><span class="mrd-v">&#8377; 6,00,000</span></div>
+<div class="mrd-kv"><span class="mrd-k">HRA</span><span class="mrd-v">&#8377; 3,00,000</span></div>
+<div class="mrd-kv"><span class="mrd-k">Other allowances</span><span class="mrd-v">&#8377; 3,40,000</span></div>
+<div class="mrd-kv"><span class="mrd-k">Provident fund</span><span class="mrd-v is-neg">- &#8377; 72,000</span></div>
+<div class="mrd-kv"><span class="mrd-k">TDS</span><span class="mrd-v is-neg">- &#8377; 1,28,000</span></div>
+<div class="mrd-kv"><span class="mrd-k">Net annual pay</span><span class="mrd-v is-total">&#8377; 12.4L</span></div>
+</div>
+<p class="mrd-foot">Changes here take effect from the next payroll run, not retroactively.</p>
+</div>
+
+<div class="ppane" id="p-leave">
+<div class="mrd-head"><span class="mrd-label">Balance this year</span></div>
+<div class="mrd-card"><div class="mrd-kv"><span class="mrd-k">Earned leave</span><span class="mrd-v">12 of 18 left</span></div>
+<div class="mrd-bar"><div class="mrd-bar-fill" style="width:33%"></div><div class="mrd-bar-mark" style="left:100%"></div></div>
+<div class="mrd-bar-label"><span>6 used</span><span>12 remaining</span></div></div>
+<div class="mrd-card"><div class="mrd-kv"><span class="mrd-k">Sick leave</span><span class="mrd-v">8 of 10 left</span></div>
+<div class="mrd-bar"><div class="mrd-bar-fill" style="width:20%"></div><div class="mrd-bar-mark" style="left:100%"></div></div>
+<div class="mrd-bar-label"><span>2 used</span><span>8 remaining</span></div></div>
+<div class="mrd-card"><div class="mrd-kv"><span class="mrd-k">Casual leave</span><span class="mrd-v">4 of 8 left</span></div>
+<div class="mrd-bar"><div class="mrd-bar-fill" style="width:50%"></div><div class="mrd-bar-mark" style="left:100%"></div></div>
+<div class="mrd-bar-label"><span>4 used</span><span>4 remaining</span></div></div>
+<p class="mrd-foot">Leave taken updates this balance the same day, from the attendance module.</p>
+</div>
+
+<div class="ppane" id="p-documents">
+<div class="mrd-head"><span class="mrd-label">On file</span><span class="mrd-count">4 documents</span></div>
+<div class="mrd-grid">
+<div class="mrd-card"><div class="mrd-row"><span class="mrd-row-name" style="font-weight:500;">PAN card</span><span class="mrd-row-end"><span class="mrd-badge is-ok">Verified</span></span></div></div>
+<div class="mrd-card"><div class="mrd-row"><span class="mrd-row-name" style="font-weight:500;">Aadhaar</span><span class="mrd-row-end"><span class="mrd-badge is-ok">Verified</span></span></div></div>
+<div class="mrd-card"><div class="mrd-row"><span class="mrd-row-name" style="font-weight:500;">Bank passbook</span><span class="mrd-row-end"><span class="mrd-badge is-ok">Verified</span></span></div></div>
+<div class="mrd-card"><div class="mrd-row"><span class="mrd-row-name" style="font-weight:500;">Form 16, previous employer</span><span class="mrd-row-end"><span class="mrd-badge is-hold">Pending review</span></span></div></div>
+</div>
+<p class="mrd-foot">Statutory filings for this person are held until every document here is verified.</p>
+</div>
+</div></div></div></div>
+
+</div>
+</div>
+<script>
+var EMP=[
+{n:'Ananya Sharma',r:'Regional Sales Manager',d:'Sales',s:'active',j:'12 Mar 2022'},
+{n:'Sanjay Mahto',r:'Procurement Executive',d:'Operations',s:'active',j:'04 Jul 2023'},
+{n:'Deepika Rao',r:'Finance Analyst',d:'Finance',s:'leave',j:'19 Jan 2021'},
+{n:'Ramesh Yadav',r:'Field Officer',d:'Operations',s:'active',j:'02 Sep 2024'},
+{n:'Priya Nair',r:'HR Executive',d:'HR',s:'notice',j:'11 Nov 2020'},
+{n:'Arjun Verma',r:'Warehouse Supervisor',d:'Logistics',s:'active',j:'30 May 2023'}
+];
+var tab='all',dept='All',q='';
+function initials(n){return n.split(' ').map(function(p){return p[0];}).join('').slice(0,2).toUpperCase();}
+function badge(s){if(s==='leave')return '<span class="mrd-badge is-hold">On leave</span>';if(s==='notice')return '<span class="mrd-badge is-bad">Notice period</span>';return '<span class="mrd-badge is-ok">Active</span>';}
+function render(){
+var rows=EMP.filter(function(e){
+if(tab==='active'&&e.s!=='active')return false;
+if(tab==='leave'&&e.s!=='leave')return false;
+if(dept!=='All'&&e.d!==dept)return false;
+if(q&&e.n.toLowerCase().indexOf(q.toLowerCase())===-1)return false;
+return true;});
+document.getElementById('shown').textContent=rows.length+' shown';
+var list=document.getElementById('list');
+if(rows.length===0){list.innerHTML='<div class="mrd-empty">No one matches this filter.</div>';return;}
+list.innerHTML=rows.map(function(e){return '<div class="mrd-card"><div class="mrd-row">'
++'<span class="mrd-avatar">'+initials(e.n)+'</span>'
++'<span class="mrd-row-main"><span class="mrd-row-name">'+e.n+'</span>'
++'<span class="mrd-row-desc" style="display:block;">'+e.r+' &middot; '+e.d+'</span>'
++'<span class="mrd-row-meta" style="display:block;">Joined '+e.j+'</span></span>'
++'<span class="mrd-row-end">'+badge(e.s)+'</span></div></div>';}).join('');
+}
+document.querySelectorAll('.mrd-tab[data-tab]').forEach(function(b){b.addEventListener('click',function(){
+document.querySelectorAll('#screen-dir .mrd-tab').forEach(function(x){x.setAttribute('aria-selected','false');});
+b.setAttribute('aria-selected','true');tab=b.getAttribute('data-tab');render();});});
+document.querySelectorAll('.mrd-chip').forEach(function(b){b.addEventListener('click',function(){
+document.querySelectorAll('.mrd-chip').forEach(function(x){x.setAttribute('aria-pressed','false');});
+b.setAttribute('aria-pressed','true');dept=b.getAttribute('data-dept');render();});});
+document.getElementById('q').addEventListener('input',function(e){q=e.target.value;render();});
+document.querySelectorAll('.mrd-tab[data-ptab]').forEach(function(b){b.addEventListener('click',function(){
+document.querySelectorAll('#screen-prof .mrd-tab').forEach(function(x){x.setAttribute('aria-selected','false');});
+b.setAttribute('aria-selected','true');
+document.querySelectorAll('.ppane').forEach(function(p){p.classList.remove('on');});
+document.getElementById('p-'+b.getAttribute('data-ptab')).classList.add('on');});});
+document.querySelectorAll('.nav-inline button').forEach(function(b){b.addEventListener('click',function(){
+var target=b.getAttribute('data-screen');
+document.querySelectorAll('.nav-inline button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-screen')===target);});
+document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('on');});
+document.getElementById('screen-'+target).classList.add('on');});});
+render();
+</script>
+</body></html>
